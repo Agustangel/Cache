@@ -127,6 +127,22 @@ namespace caches
             {
                 
             }
+            else if(cache_it == T1_B.begin)
+            {
+                if (page_it != cache_it)
+                {
+                    cache_.splice(cache_it, T1_B, page_it, std::next(page_it));
+                }
+                return true;
+            }
+            else if(cache_it == T2_B.begin())
+            {
+
+            }
+            else
+            {
+                
+            }
         }
     };
 } // namespace caches
