@@ -125,7 +125,37 @@ namespace caches
             }
             else if(cache_it == T2_A.begin())
             {
-                
+                ++sz_T1_A;
+
+                if(full(T1_B, sz_T1_B))
+                {
+                    // ключ последнего элемента T1_B 
+                    KeyT key_tmp = 0;
+                    for (HashIt::const_iterator it = hash_T1_B.begin(); it != hash_T1_B.end(); ++it) 
+                    {
+                        if (it->second == T1_B.back()) 
+                        {
+                            key_tmp = it->first;
+                        }
+                    }
+
+                    if(full(T2_B, sz_T2_B))
+                    { 
+                        hash_T2_B.erase(T2_B.back());
+                        T2_B.pop_back();
+                    }
+                    T2_B.push_front(*T1_B.back());
+                    hash_T2_B[key_tmp] = T2_B.begin();
+
+                    hash_T1_B.erase(T1_B.back());
+                    T1_B.pop_back();                    
+
+                    --sz_T1_B;
+                }
+                --sz_T1_B;
+
+                T1_A.push_front(*page_it);
+                T2_A.erase(page_it);
             }
             else if(cache_it == T1_B.begin)
             {
