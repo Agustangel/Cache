@@ -126,6 +126,11 @@ namespace caches
             else if(cache_it == T2_A.begin())
             {
                 ++sz_T1_A;
+                T1_A.push_front(*page_it);
+                hash_T1_A[key] = T1_A.begin();
+
+                hash_T2_A.erase(page_it);
+                T2_A.erase(page_it);
 
                 if(full(T1_B, sz_T1_B))
                 {
@@ -154,8 +159,7 @@ namespace caches
                 }
                 --sz_T1_B;
 
-                T1_A.push_front(*page_it);
-                T2_A.erase(page_it);
+                return true;
             }
             else if(cache_it == T1_B.begin)
             {
@@ -167,7 +171,41 @@ namespace caches
             }
             else if(cache_it == T2_B.begin())
             {
+                ++sz_T1_B;
+                T1_B.push_front(*page_it);
+                hash_T1_B[key] = T1_B.begin();
 
+                hash_T2_B.erase(page_it);
+                T2_B.erase(page_it);
+
+                if(full(T1_A, sz_T1_A))
+                {
+                    // ключ последнего элемента T1_A 
+                    KeyT key_tmp = 0;
+                    for (HashIt::const_iterator it = hash_T1_B.begin(); it != hash_T1_B.end(); ++it) 
+                    {
+                        if (it->second == T1_A.back()) 
+                        {
+                            key_tmp = it->first;
+                        }
+                    }
+
+                    if(full(T2_A, sz_T2_A))
+                    { 
+                        hash_T2_A.erase(T2_A.back());
+                        T2_A.pop_back();
+                    }
+                    T2_A.push_front(*T1_A.back());
+                    hash_T2_A[key_tmp] = T2_A.begin();
+
+                    hash_T1_A.erase(T1_A.back());
+                    T1_A.pop_back();                    
+
+                    --sz_T1_A;
+                }
+                --sz_T1_A;
+
+                return true;               
             }
             else
             {
