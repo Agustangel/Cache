@@ -78,6 +78,7 @@ namespace caches
             auto page_it = get_page(key)->second;
             auto cache_it = get_cache(page_it);
 
+            //TODO создать объект хэш-таблицы hash_hits с ключом key (смотри на строку 91)
             if (cache_it == T1_A.begin())
             {
                 int hits = hash_hits[key];
@@ -87,6 +88,8 @@ namespace caches
                     {
                         T1_A.splice(cache_it, T1_A, page_it, std::next(page_it));
                     }
+                    ++hash_hits[key];
+
                     return true;
                 }
                 else
@@ -209,16 +212,16 @@ namespace caches
             }
             else
             {
-                
+                if (full(T1_A, sz_T1_A))
+                {
+                    hash_T1_A.erase(T1_A.back());
+                    T1_A.pop_back();
+                }
+                T1_A.push_front(slow_get_page(key));
+                hash_T1_A[key] = T1_A.begin();     
+
+                return false;           
             }
         }
     };
 } // namespace caches
-
-                    // if (full(cache, sz_T1_A))
-                    // {
-                    //     hash_T1_A.erase(cache.back());
-                    //     cache.pop_back();
-                    // }
-                    // cache.push_front(slow_get_page(key));
-                    // hash_T1_A[key] = cache.begin();
